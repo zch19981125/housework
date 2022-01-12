@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%;overflow: hidden">
-    <Card padding="8">
+    <Card padding=8>
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>

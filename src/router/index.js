@@ -16,7 +16,6 @@ const routes = [
   {path: '/moneyReportList', component: moneyReportList},
   {path: '/', redirect: '/index'}
 ]
-
 // eslint-disable-next-line no-undef
 const router = new Router({
   mode: 'hash',

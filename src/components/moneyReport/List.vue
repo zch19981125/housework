@@ -1,17 +1,22 @@
 <template>
   <Div>
-    <Card padding="8">
+    <Card padding=8>
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" :data="data" style="margin-top: 3px"></Table>
+      <Table border :columns="columns" style="margin-top: 3px"></Table>
     </Card>
+    <reportAdd :isShow="addShow" @on-callback="callback"></reportAdd>
   </Div>
 </template>
 
 <script>
+import reportAdd from './compant/add'
 export default {
   name: 'moneyReportList',
+  components: {
+    reportAdd
+  },
   data () {
     return {
       columns: [
@@ -45,7 +50,14 @@ export default {
           minWidth: 300,
           align: 'center'
         }
-      ]
+      ],
+      addShow: false
+    }
+  },
+  methods: {
+    callback (oper) { // 关闭模态框回调
+      debugger
+      this.addShow = false
     }
   }
 }

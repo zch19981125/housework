@@ -1,17 +1,22 @@
 <template>
   <div style="height: 100%;overflow: hidden">
-    <Card padding="8">
+    <Card padding=8>
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>
       <Table border :columns="columns" :data="data" style="margin-top: 3px"></Table>
     </Card>
+    <AddService :isShow="addShow" @on-callback="callback"></AddService>
   </div>
 </template>
 
 <script>
+import AddService from './compant/add'
 export default {
   name: 'serviceList',
+  components: {
+    AddService
+  },
   data () {
     return {
       columns: [
@@ -75,7 +80,13 @@ export default {
             return h('div', err)
           }
         }
-      ]
+      ],
+      addShow: false
+    }
+  },
+  methods: {
+    callback () {
+      this.addShow = false
     }
   }
 }
