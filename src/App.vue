@@ -39,7 +39,7 @@
           <span :style="{marginLeft: '60vh'}">鸿远家政</span>
           <Icon type="ios-body" :style="{marginRight: '11px'}" size="20"/>
         </Header>
-        <Content :style="{background: 'rgba(241,233,233,0.34)', height: '95vh',marginTop: '3px'}"><router-view></router-view></Content>
+        <Content :style="{background: 'rgba(241,233,233,0.34)', height: '96vh',marginTop: '3px'}"><router-view></router-view></Content>
       </Layout>
     </Layout>
   </div>

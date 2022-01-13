@@ -1,16 +1,22 @@
 <template>
   <div style="height: 100%;overflow: hidden">
     <Card padding=8>
-      <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
+      <Button type="primary" @click="show">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" :data="data" style="margin-top: 3px"></Table>
+      <Table border :columns="columns" :data="data" style="margin-top: 3px" stripe></Table>
+      <div style="margin: 10px;overflow: hidden">
+        <div style="float: right">
+          <Page :total="page.title" :page-size="page.size" :current="page.current" show-sizer show-total show-elevator
+                @on-change="changePage" @on-page-size-change="changePage" @on-prev="changePage" @on-next="changePage"></Page>
+        </div>
+      </div>
     </Card>
     <Modal
         title="新增服务字典"
         width="800"
         v-model="addShow"
-        label-width="80"
+        label-width=80
         :closable="false">
       <Form :label-width="80">
         <Row type="flex" justify="center" class="code-row-bg">
@@ -36,6 +42,8 @@
 </template>
 
 <script>
+import {init, pageSearch} from '../common/api/DictApi'
+
 export default {
   name: 'List',
   data () {
@@ -76,10 +84,33 @@ export default {
           }
         }
       ],
+      page: {
+        content: [],
+        title: 0,
+        current: 1,
+        size: 10
+      },
       data: [
         {name: '保洁', value: '1'}
       ],
       addShow: false
+    }
+  },
+  methods: {
+    show () {
+      debugger
+      init().then(res => {
+        console.log('ddd')
+      })
+      this.addShow = true
+    },
+    changePage () {
+      debugger
+      pageSearch(this.page).then(res => {
+        if (res.data.code === 200) {
+          this.page = res.data.body
+        }
+      })
     }
   }
 }

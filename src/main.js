@@ -5,7 +5,9 @@ import App from './App'
 import router from './router'
 import iView from 'iview'
 import 'iview/dist/styles/iview.css'
+import qs from 'qs'
 
+Vue.prototype.qs = qs
 Vue.use(iView)
 Vue.config.productionTip = false
 
@@ -13,6 +15,6 @@ Vue.config.productionTip = false
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: {App},
   template: '<App/>'
 })
