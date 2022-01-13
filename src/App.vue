@@ -9,10 +9,10 @@
           <MenuItem name="3" to="moneyReportList" >
             <Icon type="md-document" />
             日常上报</MenuItem>
-          <MenuItem name="4">
+          <MenuItem name="4" to="servicePeopleList">
             <Icon type="md-contacts" />
             工作人员</MenuItem>
-          <MenuItem name="5">
+          <MenuItem name="5" to="customerList">
             <Icon type="md-person-add" />
             客户</MenuItem>
           <Submenu name="6">

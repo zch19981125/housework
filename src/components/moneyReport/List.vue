@@ -27,6 +27,12 @@ export default {
           align: 'center'
         },
         {
+          title: '费用名称',
+          type: 'index',
+          minWidth: 200,
+          align: 'center'
+        },
+        {
           title: '类型',
           type: 'index',
           minWidth: 200,

@@ -5,6 +5,8 @@ import List from '../components/serviceDict/List'
 import ReposDictList from '../components/serviceDict/RepostList'
 import serviceList from '../components/service/List'
 import moneyReportList from '../components/moneyReport/List'
+import servicePeopleList from '../components/servicePeople/List'
+import customerList from '../components/customer/List'
 
 Vue.use(Router)
 
@@ -14,6 +16,8 @@ const routes = [
   {path: '/ReposDictList', component: ReposDictList},
   {path: '/serviceList', component: serviceList},
   {path: '/moneyReportList', component: moneyReportList},
+  {path: '/servicePeopleList', component: servicePeopleList},
+  {path: '/customerList', component: customerList},
   {path: '/', redirect: '/index'}
 ]
 // eslint-disable-next-line no-undef
