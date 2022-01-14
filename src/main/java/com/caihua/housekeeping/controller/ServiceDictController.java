@@ -1,15 +1,16 @@
 package com.caihua.housekeeping.controller;
 
-import com.alibaba.fastjson.JSONObject;
+import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.caihua.housekeeping.common.util.ResponseJson;
-import com.caihua.housekeeping.entity.ServiceDict;
+import com.caihua.housekeeping.entity.Dict;
 import com.caihua.housekeeping.service.ServiceDictService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+
+import java.util.Date;
+import java.util.List;
 
 @Controller
 @RequestMapping("serviceDict")
@@ -23,18 +24,19 @@ public class ServiceDictController {
 	ServiceDictService dictService;
 
 	@RequestMapping("add")
-	public ResponseJson addServiceDict(ServiceDict dict){
-		return ResponseJson.success(dictService.save(dict));
+	public ResponseJson addServiceDict(@RequestBody Dict dict){
+		Boolean result =dictService.saveServiceDict(dict);
+		return ResponseJson.success(result);
 	}
 
 	@RequestMapping("del")
-	public ResponseJson delServiceDict(ServiceDict dict){
+	public ResponseJson delServiceDict(Dict dict){
 		return ResponseJson.success(dictService.removeById(dict.getId()));
 	}
 
 	@RequestMapping("list")
-	public ResponseJson listServiceDict(ServiceDict dict,Integer current,Integer num){
-		return ResponseJson.success(dictService.list());
+	public ResponseJson listServiceDict(Dict dict, IPage<Dict> page){
+		return ResponseJson.success(dictService.pageList(Integer.parseInt(String.valueOf(page.getCurrent())), Integer.parseInt(String.valueOf(page.getSize())), dict));
 	}
 
 }
