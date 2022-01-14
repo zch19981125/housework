@@ -1,6 +1,6 @@
 <template>
   <Div>
-    <Card padding=8>
+    <Card :padding=8>
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>
@@ -62,7 +62,6 @@ export default {
   },
   methods: {
     callback (oper) { // 关闭模态框回调
-      debugger
       this.addShow = false
     }
   }

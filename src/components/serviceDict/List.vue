@@ -1,48 +1,59 @@
 <template>
   <div style="height: 100%;overflow: hidden">
-    <Card padding=8>
+    <Card :padding=8>
       <Button type="primary" @click="show">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" :data="data" style="margin-top: 3px" stripe></Table>
+      <div style="float: right">
+        <Button @click="handleSearch(page)">搜索</Button>
+        <Button>重置</Button>
+      </div>
+      <Table border :height="tableHeight" :columns="columns" size="large" :data="page.records" style="margin-top: 4vh"
+             stripe></Table>
       <div style="margin: 10px;overflow: hidden">
         <div style="float: right">
-          <Page :total="page.title" :page-size="page.size" :current="page.current" show-sizer show-total show-elevator
-                @on-change="changePage" @on-page-size-change="changePage" @on-prev="changePage" @on-next="changePage"></Page>
+          <Page :total="page.total" :page-size="page.size" :current="page.current" show-sizer show-total show-elevator
+                @on-change="changePage" @on-page-size-change="changePageSize" @on-prev="changePage"
+                @on-next="changePage"></Page>
         </div>
       </div>
     </Card>
     <Modal
         title="新增服务字典"
         width="800"
-        v-model="addShow"
+        :value="addShow"
         label-width=80
         :closable="false">
       <Form :label-width="80">
         <Row type="flex" justify="center" class="code-row-bg">
           <Col span="18">
             <FormItem label="字典名称" prop="passwd" class="font">
-              <Input type="password" style="width: 20%;"></Input>
+              <Input v-model="entity.name" style="width: 20%;"></Input>
             </FormItem>
           </Col>
           <Col span="18">
             <FormItem label="字典值" prop="passwdCheck" class="font">
-              <Input type="password" style="width: 60%;"></Input>
+              <Input v-model="entity.value" style="width: 60%;"></Input>
             </FormItem>
           </Col>
-          <Col span="18">
+          <Col span="18">,
             <FormItem label="排序" prop="age" class="font">
-              <Input type="text" style="width: 60%;"></Input>
+              <Input type="text" v-model="entity.order" style="width: 60%;"></Input>
             </FormItem>
           </Col>
         </Row>
       </Form>
+      <div slot="footer">
+        <Button @click="()=>{this.addShow =false ;this.handleClear}" type="default">取消</Button>
+        <Button @click="handleOk" :loading="buttonLoading" type="primary">确定</Button>
+      </div>
     </Modal>
   </div>
 </template>
 
 <script>
-import {init, pageSearch} from '../common/api/DictApi'
+import {addServiceDict, pageSearch} from '../common/api/DictApi'
+import {responseHandle} from '../common/utils/response'
 
 export default {
   name: 'List',
@@ -84,34 +95,68 @@ export default {
           }
         }
       ],
+      entity: {
+        name: '',
+        value: '',
+        order: '',
+        type: ''
+      },
       page: {
-        content: [],
-        title: 0,
+        records: [],
+        total: 0,
         current: 1,
         size: 10
       },
-      data: [
-        {name: '保洁', value: '1'}
-      ],
-      addShow: false
+      addShow: false,
+      buttonLoading: false,
+      height: document.body.clientHeight,
+      tableHeight: ''
     }
   },
   methods: {
     show () {
-      debugger
-      init().then(res => {
-        console.log('ddd')
-      })
       this.addShow = true
     },
-    changePage () {
-      debugger
-      pageSearch(this.page).then(res => {
-        if (res.data.code === 200) {
-          this.page = res.data.body
+    handleSearch () {
+      let param = this.page
+      param.type = 1
+      param.records = []
+      // param.order = ['order']
+      console.log(param)
+      pageSearch(param).then(res => {
+        if (responseHandle(res)) this.page = res.data.body
+      })
+    },
+    changePage (current) {
+      this.page.current = current
+      this.handleSearch(this.page)
+    },
+    changePageSize (size) {
+      this.page.size = size
+      this.handleSearch(this.page)
+    },
+    handleClear () {
+      this.entity = {}
+    },
+    handleOk () {
+      this.buttonLoading = true
+      this.entity.type = '1'
+      addServiceDict(this.entity).then(res => {
+        if (responseHandle(res)) {
+          this.$Message.success('添加成功')
+          this.addShow = false
+        } else {
+          this.$Message.error(res.data.msg)
         }
+        this.buttonLoading = false
+        this.handleSearch(this.page)
       })
     }
+  },
+  mounted () {
+    this.handleSearch(this.page)
+    this.tableHeight = (this.height * 0.75).toString()
+    console.log(this.tableHeight)
   }
 }
 </script>

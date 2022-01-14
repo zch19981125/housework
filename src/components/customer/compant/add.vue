@@ -21,7 +21,6 @@ export default {
   },
   methods: {
     cancel () {
-      debugger
       this.$emit('on-callback')
     }
   }

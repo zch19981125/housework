@@ -1,10 +1,10 @@
 <template>
   <div style="height: 100%;overflow: hidden">
-    <Card padding=8>
+    <Card :padding=8>
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" style="margin-top: 3px"></Table>
+      <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch"></MyTable>
     </Card>
     <Modal
         title="新增服务字典"
@@ -15,29 +15,40 @@
       <Form :label-width="80">
         <Row type="flex" justify="center" class="code-row-bg">
           <Col span="18">
-            <FormItem label="字典名称" prop="passwd" class="font">
-              <Input type="password" style="width: 20%;"></Input>
+            <FormItem label="字典名称"  prop="passwd" class="font">
+              <Input style="width: 20%;" v-model="entity.name"></Input>
             </FormItem>
           </Col>
           <Col span="18">
             <FormItem label="字典值" prop="passwdCheck" class="font">
-              <Input type="password" style="width: 60%;"></Input>
+              <Input style="width: 20%;" v-model="entity.value"></Input>
             </FormItem>
           </Col>
           <Col span="18">
-            <FormItem label="排序" prop="age" class="font">
-              <Input type="text" style="width: 60%;"></Input>
+            <FormItem label="排序"  prop="age" class="font">
+              <Input style="width: 20%;" v-model="entity.order"></Input>
             </FormItem>
           </Col>
         </Row>
       </Form>
+      <div slot="footer">
+        <Button @click="()=>{this.addShow =false ;this.handleClear}" type="default">取消</Button>
+        <Button @click="handleOk" :loading="buttonLoading" type="primary">确定</Button>
+      </div>
     </Modal>
   </div>
 </template>
 
 <script>
+import MyTable from '../common/utils/MyTable'
+import {addServiceDict, pageSearch} from '../common/api/DictApi'
+import {responseHandle} from '../common/utils/response'
+
 export default {
   name: 'ReposDictList',
+  components: {
+    MyTable
+  },
   data () {
     return {
       columns: [
@@ -76,11 +87,52 @@ export default {
           }
         }
       ],
-      data: [
-        {name: '保洁', value: '1'}
-      ],
-      addShow: false
+      page: {
+        records: [],
+        total: 0,
+        current: 1,
+        size: 10
+      },
+      entity: {
+        name: '',
+        value: '',
+        order: '',
+        type: ''
+      },
+      addShow: false,
+      buttonLoading: false
     }
+  },
+  methods: {
+    handleClear () {
+      this.entity = {}
+    },
+    handleSearch (ipage) {
+      this.page = ipage
+      let param = this.page
+      param.type = '2'
+      pageSearch(param).then(res => {
+        if (responseHandle(res)) this.page = res.data.body
+      })
+    },
+    handleOk () {
+      debugger
+      this.buttonLoading = true
+      this.entity.type = '2'
+      addServiceDict(this.entity).then(res => {
+        if (responseHandle(res)) {
+          this.$Message.success('添加成功')
+          this.addShow = false
+        } else {
+          this.$Message.error(res.data.msg)
+        }
+        this.buttonLoading = false
+        this.handleSearch(this.page)
+      })
+    }
+  },
+  mounted () {
+    this.handleSearch(this.page)
   }
 }
 </script>

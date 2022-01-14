@@ -1,6 +1,6 @@
 <template>
   <div style="height: 100%;overflow: hidden">
-    <Card padding=8>
+    <Card :padding=8>
       <Button type="primary" @click="show">新增</Button>
     </Card>
     <Card>
@@ -84,11 +84,9 @@ export default {
   },
   methods: {
     callback () {
-      debugger
       this.isShow = false
     },
     show () {
-      debugger
       this.isShow = true
     }
   }
