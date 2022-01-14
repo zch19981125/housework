@@ -4,7 +4,7 @@
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" :data="data" style="margin-top: 3px"></Table>
+      <Table border :columns="columns" style="margin-top: 3px"></Table>
     </Card>
     <AddService :isShow="addShow" @on-callback="callback"></AddService>
   </div>

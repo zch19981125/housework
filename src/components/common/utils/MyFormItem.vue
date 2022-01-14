@@ -1,7 +1,9 @@
 <template>
   <div>
     <Col :span="span">
-      <FormItem :label="label" :prop="prop" class="font"></FormItem>
+      <FormItem :label="label" :prop="prop" :props="prop" class="font">
+        <template></template>
+      </FormItem>
     </Col>
   </div>
 </template>
@@ -12,7 +14,7 @@ export default {
   props: {
     span: '',
     label: '',
-    props: ''
+    prop: ''
   }
 }
 </script>
