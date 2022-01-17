@@ -1,35 +1,47 @@
 <template>
-  <Modal v-model="isShow" width="800" @on-cancel="cancel" title="新增日常上报" :styles="{height:'1000px'}">
+  <Modal :value="isShow" width="800" @on-cancel="cancel" title="新增日常上报" :styles="{height:'1000px'}" :closable = "false">
     <Form :label-width="80" label-position="right">
       <Row>
         <MyFormItem label="客户" :span="12">
-          <span>115666666666666666666</span>
+          <Input style="width: 80%" search enter-button @on-search="searchCustom"/>
         </MyFormItem>
         <MyFormItem label="工作人员" span="12">
-          <span>115666666666666666666</span>
+          <Input style="width: 80%" search @on-search="searchServicePerson" enter-button/>
         </MyFormItem>
-        <MyFormItem label="服务类型" span="12"></MyFormItem>
-        <MyFormItem label="服务费" span="12"></MyFormItem>
-        <MyFormItem label="服务地址" span="12"></MyFormItem>
-        <MyFormItem label="服务时间" span="12"></MyFormItem>
+        <MyFormItem label="服务类型" span="12">
+          <Select style="width: 80%">
+            <!--            <Option></Option>-->
+          </Select>
+        </MyFormItem>
+        <MyFormItem label="服务费" span="12">
+          <Input style="width: 50%">
+            <span slot="append">元</span>
+          </Input>
+        </MyFormItem>
+        <MyFormItem label="服务地址" span="12">
+          <Input placeholder="Enter something..." style="width: 80%"/>
+        </MyFormItem>
+        <MyFormItem label="服务时间" span="12">
+          <DatePicker type="daterange" confirm placement="bottom-end" placeholder="Select date"
+                      style="width: 80%"></DatePicker>
+        </MyFormItem>
       </Row>
     </Form>
-    <Modal
-        v-model="customShow"
-        title="Common Modal dialog box title">
-      <p>Content of dialog</p>
-      <p>Content of dialog</p>
-      <p>Content of dialog</p>
-    </Modal>
+    <SelectServicePerson :isShow="selectServicePersonShow" @on-callback="callBack"></SelectServicePerson>
+    <SelectCustom :isShow="selectCustomShow" @on-callback="callBack"></SelectCustom>
   </Modal>
 </template>
 
 <script>
 import MyFormItem from '../../common/utils/MyFormItem'
+import SelectServicePerson from './selectServicePerson'
+import SelectCustom from './selectCustom'
 
 export default {
   name: 'add',
   components: {
+    SelectCustom,
+    SelectServicePerson,
     MyFormItem
   },
   props: {
@@ -40,12 +52,25 @@ export default {
   },
   data () {
     return {
-      customShow: false
+      selectCustomShow: false,
+      selectServicePersonShow: false
     }
   },
   methods: {
+    handleClear () {
+    },
     cancel () {
       this.$emit('on-callback')
+    },
+    searchServicePerson () {
+      this.selectServicePersonShow = true
+    },
+    searchCustom () {
+      this.selectCustomShow = true
+    },
+    callBack () {
+      this.selectServicePersonShow = false
+      this.selectCustomShow = false
     }
   }
 }

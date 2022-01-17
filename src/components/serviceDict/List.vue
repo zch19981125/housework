@@ -4,19 +4,12 @@
       <Button type="primary" @click="show">新增</Button>
     </Card>
     <Card>
-      <div style="float: right">
+      <div slot="title" v-if="false"></div>
+      <div slot="extra">
         <Button @click="handleSearch(page)">搜索</Button>
         <Button>重置</Button>
       </div>
-      <Table border :height="tableHeight" :columns="columns" size="large" :data="page.records" style="margin-top: 4vh"
-             stripe></Table>
-      <div style="margin: 10px;overflow: hidden">
-        <div style="float: right">
-          <Page :total="page.total" :page-size="page.size" :current="page.current" show-sizer show-total show-elevator
-                @on-change="changePage" @on-page-size-change="changePageSize" @on-prev="changePage"
-                @on-next="changePage"></Page>
-        </div>
-      </div>
+      <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch"></MyTable>
     </Card>
     <Modal
         title="新增服务字典"
@@ -54,9 +47,13 @@
 <script>
 import {addServiceDict, pageSearch} from '../common/api/DictApi'
 import {responseHandle} from '../common/utils/response'
+import MyTable from '../common/utils/MyTable'
 
 export default {
   name: 'List',
+  components: {
+    MyTable
+  },
   data () {
     return {
       columns: [
@@ -107,6 +104,7 @@ export default {
         current: 1,
         size: 10
       },
+      loading: false,
       addShow: false,
       buttonLoading: false,
       height: document.body.clientHeight,
@@ -117,7 +115,10 @@ export default {
     show () {
       this.addShow = true
     },
-    handleSearch () {
+    handleSearch (page) {
+      debugger
+      this.loading = true
+      this.page = page
       let param = this.page
       param.type = 1
       param.records = []
@@ -125,6 +126,7 @@ export default {
       console.log(param)
       pageSearch(param).then(res => {
         if (responseHandle(res)) this.page = res.data.body
+        this.loading = false
       })
     },
     changePage (current) {

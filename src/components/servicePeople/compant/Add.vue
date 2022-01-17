@@ -5,14 +5,32 @@
       width="800"
       @on-cancel="cancel">
     <div>
-      <Form>
+      <Form label-width="100" label-position="right">
         <Row>
-          <FormItem label="姓名" span="12"></FormItem>
-          <FormItem label="擅长" :span="12"></FormItem>
-          <FormItem label="性别" :span="12"></FormItem>
-          <FormItem label="年龄" :span="12"></FormItem>
-          <FormItem label="家庭住址" :span="12"></FormItem>
-          <FormItem label="身份证号" :span="12"></FormItem>
+          <FormItem label="姓名" span="12">
+            <Input style="width: 80%"></Input>
+          </FormItem>
+          <FormItem label="擅长" :span="12">
+            <Select style="width: 80%"></Select>
+          </FormItem>
+          <FormItem label="性别" :span="12">
+            <RadioGroup type="button" size="large" class="center">
+              <Radio label="男"></Radio>
+              <Radio label="女"></Radio>
+            </RadioGroup>
+          </FormItem>
+          <FormItem label="年龄" :span="12">
+            <div class="center" style="margin-left: -40%">
+              <InputNumber></InputNumber>
+              <span>岁</span>
+            </div>
+          </FormItem>
+          <FormItem label="家庭住址" :span="12">
+            <Input style="width: 80%"></Input>
+          </FormItem>
+          <FormItem label="身份证号" :span="12">
+            <Input style="width: 80%"></Input>
+          </FormItem>
           <FormItem label="身份证正面" :span="12"></FormItem>
           <FormItem label="身份证反面" :span="12"></FormItem>
         </Row>
@@ -44,5 +62,11 @@ export default {
 </script>
 
 <style scoped>
+.center {
+  width: 50%;
+  position: absolute;
+  left: 50%;
+  margin-left: -35%;
+}
 
 </style>

@@ -2,7 +2,7 @@
   <div>
     <Col :span="span">
       <FormItem :label="label" :prop="prop" :props="prop" class="font">
-        <template></template>
+        <slot></slot>
       </FormItem>
     </Col>
   </div>
