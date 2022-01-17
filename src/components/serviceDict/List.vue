@@ -82,13 +82,27 @@ export default {
           width: 100
         },
         {
-          title: '操作',
-          render (h, param) {
-            let err = []
-            err.push(h('Button', {style: 'margin-left: 10px'}, '详情'))
-            err.push(h('Button', {style: 'margin-left: 10px'}, '修改'))
-            err.push(h('Button', {style: 'margin-left: 10px'}, '删除'))
-            return h('div', err)
+          title: 'Action',
+          key: 'action',
+          width: 150,
+          align: 'center',
+          render: (h, params) => {
+            return h('div', [
+              h('Button', {
+                props: {
+                  type: 'error',
+                  size: 'small'
+                },
+                style: {
+                  marginRight: '5px'
+                },
+                on: {
+                  click: () => {
+                    this.handlerDelete(params.row)
+                  }
+                }
+              }, '删除')
+            ])
           }
         }
       ],
@@ -108,7 +122,9 @@ export default {
       addShow: false,
       buttonLoading: false,
       height: document.body.clientHeight,
-      tableHeight: ''
+      tableHeight: '',
+      isDelete: false,
+      deleteLoading: false
     }
   },
   methods: {
@@ -152,6 +168,15 @@ export default {
         }
         this.buttonLoading = false
         this.handleSearch(this.page)
+      })
+    },
+    handlerDelete (row) {
+      debugger
+      this.$Modal.confirm({
+        title: '工作服务字典删除',
+        content: '<p>您确定要删除检查事项<br>[' + '<span style="color:#c04f4f;">' + row.name + '</span>' + ']吗?</p>',
+        onOk: () => {
+        }
       })
     }
   },
