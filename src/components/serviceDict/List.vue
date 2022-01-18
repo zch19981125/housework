@@ -15,7 +15,7 @@
         title="新增服务字典"
         width="800"
         :value="addShow"
-        label-width=80
+        :label-width=80
         :closable="false">
       <Form :label-width="80">
         <Row type="flex" justify="center" class="code-row-bg">

@@ -1,10 +1,10 @@
 <template>
   <Div>
-    <Card padding=8>
+    <Card :padding=8>
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" style="margin-top: 3px"></Table>
+      <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch"></MyTable>
     </Card>
     <customerAdd :isShow="addShow" @on-callback="callback"></customerAdd>
   </Div>
@@ -12,10 +12,15 @@
 
 <script>
 import customerAdd from './compant/add'
+import {pageSearch} from '../common/api/CustomApi'
+import {responseHandle} from '../common/utils/response'
+import MyTable from '../common/utils/MyTable'
+
 export default {
   name: 'customerList',
   components: {
-    customerAdd
+    customerAdd,
+    MyTable
   },
   data () {
     return {
@@ -28,37 +33,37 @@ export default {
         },
         {
           title: '姓名',
-          key: 'customer',
+          key: 'name',
           width: 200,
           align: 'center'
         },
         {
           title: '性别',
-          key: 'customer',
+          key: 'sex',
           width: 120,
           align: 'center'
         },
         {
           title: '年龄',
-          key: 'serviceMoney',
+          key: 'age',
           width: 100,
           align: 'center'
         },
         {
           title: '家庭地址',
-          key: 'staffMember',
+          key: 'address',
           minWidth: 120,
           align: 'center'
         },
         {
           title: '身份证号',
-          key: 'customer',
+          key: 'identityNum',
           width: 250,
           align: 'center'
         },
         {
           title: '登记时间',
-          key: 'customer',
+          key: 'createDate',
           width: 200,
           align: 'center'
         },
@@ -75,13 +80,36 @@ export default {
           }
         }
       ],
-      addShow: false
+      page: {
+        records: [],
+        total: 0,
+        current: 1,
+        size: 10
+      },
+      addShow: false,
+      loading: false
     }
   },
   methods: {
-    callback () {
+    callback (isSearch) {
+      debugger
       this.addShow = false
+      if (isSearch) {
+        this.handleSearch()
+      }
+    },
+    handleSearch (page) {
+      if (page) this.page = page
+      let searchPage = this.page
+      searchPage.records = []
+      pageSearch(searchPage).then(res => {
+        if (responseHandle(res)) this.page = res.data.body
+        this.loading = false
+      })
     }
+  },
+  mounted () {
+    this.handleSearch()
   }
 }
 </script>

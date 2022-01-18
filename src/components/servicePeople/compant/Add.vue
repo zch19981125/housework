@@ -5,7 +5,7 @@
       width="800"
       @on-cancel="cancel">
     <div>
-      <Form label-width="100" label-position="right">
+      <Form :label-width="100" label-position="right">
         <Row>
           <FormItem label="姓名" span="12">
             <Input style="width: 80%"></Input>

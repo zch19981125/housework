@@ -1,6 +1,6 @@
 <template>
   <modal title="新增日常上报" v-model="isShow" @on-cancel="cancel" :closable="false">
-    <Form label-width="100" label-position="right">
+    <Form :label-width="100" label-position="right">
       <MyFormItem label="费用名称">
         <Input style="width: 80%"></Input>
       </MyFormItem>

@@ -98,7 +98,6 @@ export default {
       this.$emit('on-callback', '')
     },
     handleEdit (row, index) {
-      debugger
       this.editId = row.id
       this.salary = row.salary
       this.editIndex = index
