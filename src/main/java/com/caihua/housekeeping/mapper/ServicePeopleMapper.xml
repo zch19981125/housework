@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caihua.housekeeping.mapper.ServicePeopleMapper">
+
+    <resultMap id="people" type="com.caihua.housekeeping.entity.ServicePeople">
+        <id column="id" property="id"></id>
+        <result property="age" column="age"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+        <result property="identityNum" column="identity_num"></result>
+        <result property="createDate" column="create_date"></result>
+        <result property="updateDate" column="update_date"></result>
+        <result property="isDelete" column="is_delete"></result>
+        <collection property="dicts" ofType="com.caihua.housekeeping.entity.Dict" columnPrefix="dict_">
+            <id property="id" column="id"></id>
+            <result property="name" column="name"></result>
+            <result property="value" column="value"></result>
+        </collection>
+    </resultMap>
+    <resultMap id="peopleVo" type="com.caihua.housekeeping.entity.vo.ServicePeopleVo">
+        <id column="id" property="id"></id>
+        <result property="age" column="age"></result>
+        <result property="sex" column="sex"></result>
+        <result property="address" column="address"></result>
+        <result property="identityNum" column="identity_num"></result>
+        <result property="createDate" column="create_date"></result>
+        <result property="updateDate" column="update_date"></result>
+        <result property="isDelete" column="is_delete"></result>
+        <result property="dictName" column="dicts"></result>
+    </resultMap>
+
+    <select id="listServicePeople" parameterType="com.caihua.housekeeping.entity.ServicePeople" resultMap="peopleVo">
+        SELECT s.*, GROUP_CONCAT(dict.name order by dict.order SEPARATOR  ',') as dicts
+        FROM service_people s
+                 LEFT JOIN people_dict p
+                           on s.id = p.people_id
+                 LEFT JOIN dict dict
+                           on p.dict_id = dict.id
+        WHERE s.is_delete ='0'
+        <if test="people.age != null">
+            and p.age = #{people.age}
+        </if>
+        <if test="people.name != null">
+            and p.name = #{people.name}
+        </if>
+        <if test="people.dicts != null">
+            and dict.id in
+          <foreach collection="people.dicts" index="index" item="dictItem" open="(" close=")" separator=",">
+            #{people.dicts[$index]}
+          </foreach>
+        </if>
+        order by s.create_date
+        limit #{current },#{size}
+    </select>
+
+
+    <select id="countListServicePeople" resultType="java.lang.Integer">
+        SELECT count(s.id)
+        FROM service_people s
+        LEFT JOIN people_dict p
+        on s.id = p.people_id
+        LEFT JOIN dict dict
+        on p.dict_id = dict.id
+        WHERE s.is_delete ='0'
+        <if test="people.age != null">
+            and p.age = #{people.age}
+        </if>
+        <if test="people.name != null">
+            and p.name = #{people.name}
+        </if>
+        <if test="people.dicts != null">
+            and dict.id in
+            <foreach collection="people.dicts" index="index" item="dictItem" open="(" close=")" separator=",">
+                #{people.dicts[$index]}
+            </foreach>
+        </if>
+    </select>
+</mapper>

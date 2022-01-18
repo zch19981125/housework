@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.caihua.housekeeping.mapper.ServiceMapper">
+    <resultMap id="pageSearchMap" type="com.caihua.housekeeping.entity.vo.ServiceVo">
+        <id column="id" property="id"></id>
+        <result column="service_num" property="serviceNum"></result>
+        <result column="address" property="address"></result>
+        <result column="money" property="money"></result>
+        <result column="service_people" property="servicePeople"></result>
+        <result column="custom" property="custom"></result>
+        <result column="type" property="serviceType"></result>
+        <result column="create_date" property="createDate"></result>
+    </resultMap>
+
+    <select id="pageSearch" resultMap="pageSearchMap">
+        SELECT s.*,
+               GROUP_CONCAT(dict.name ORDER BY dict.`order` SEPARATOR ',') as type,
+               GROUP_CONCAT(people.name ORDER BY people.`create_date` SEPARATOR ',') as service_people
+        FROM `service` s
+                 LEFT JOIN service_dict sd
+                           on s.id = sd.service_id
+                 LEFT JOIN dict
+                           on sd.dict_id = dict.id
+                 LEFT JOIN service_service_people sp
+                           on sp.service_id = s.id
+                 LEFT JOIN service_people people
+                           on sp.people_id = people.id
+                 LEFT JOIN service_custom sc
+                           on sc.service_id = s.id
+        where is_delete = '0'
+        order by s.create_date desc
+        limit #{current},#{size}
+    </select>
+
+</mapper>

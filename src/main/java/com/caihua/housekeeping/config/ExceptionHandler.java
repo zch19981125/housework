@@ -16,6 +16,7 @@ public class ExceptionHandler {
 		if(e instanceof RuntimeException){
 			responseJson =ResponseJson.error(e.getMessage());
 		}
+		e.printStackTrace();
 		return responseJson;
 	}
 
