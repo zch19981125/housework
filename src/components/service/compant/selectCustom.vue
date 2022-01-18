@@ -1,6 +1,6 @@
 <template>
   <Modal v-model="isShow" width="1200" :closable = "false">
-    <Table border :columns="columns" style="margin-top: 3px"/>
+    <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch"></MyTable>
     <div slot="footer">
       <Button @click="cancel">关闭</Button>
     </div>
@@ -8,8 +8,14 @@
 </template>
 
 <script>
+import MyTable from '../../common/utils/MyTable'
+import {pageSearch} from '../../common/api/CustomApi'
+import {responseHandle} from '../../common/utils/response'
 export default {
   name: 'selectCustom',
+  components: {
+    MyTable
+  },
   props: {
     isShow: false
   },
@@ -70,12 +76,27 @@ export default {
             return h('div', err)
           }
         }
-      ]
+      ],
+      page: {
+        records: [],
+        total: 0,
+        current: 1,
+        size: 10
+      }
     }
   },
   methods: {
     cancel () {
       this.$emit('on-callback', '')
+    },
+    handleSearch (page) {
+      if (page) this.page = page
+      let searchPage = this.page
+      searchPage.records = []
+      pageSearch(searchPage).then(res => {
+        if (responseHandle(res)) this.page = res.data.body
+        this.loading = false
+      })
     }
   }
 }

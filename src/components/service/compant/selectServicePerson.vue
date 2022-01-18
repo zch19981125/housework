@@ -1,6 +1,6 @@
 <template>
   <Modal v-model="isShow" width="1200" :closable="false">
-    <Table border :columns="columns" :data="entity" style="margin-top: 3px">
+    <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch">
       <template slot-scope="{ row, index }" slot="salary">
         <Input type="text" v-model="salary" v-if="editIndex === index"/>
         <span v-else>{{ row.salary }}</span>
@@ -14,7 +14,7 @@
           <Button @click="handleEdit(row, index)">操作</Button>
         </div>
       </template>
-    </Table>
+    </MyTable>
     <div slot="footer">
       <Button @click="cancel">关闭</Button>
     </div>
@@ -22,8 +22,12 @@
 </template>
 
 <script>
+import {pageSearch} from '../../common/api/ServicePeopleApi'
+import {responseHandle} from '../../common/utils/response'
+import MyTable from '../../common/utils/MyTable'
 export default {
   name: 'selectServicePerson',
+  components: {MyTable},
   props: {
     isShow: false
   },
@@ -90,7 +94,13 @@ export default {
         staffMember: '惠泽园',
         identityNumber: '37232116669863214',
         salary: '100'
-      }]
+      }],
+      page: {
+        records: [],
+        total: 0,
+        current: 1,
+        size: 10
+      }
     }
   },
   methods: {
@@ -106,7 +116,21 @@ export default {
       this.data[index].salary = this.salary
       this.data[index].id = this.editId
       this.editIndex = -1
+    },
+    handleSearch (page) {
+      if (page) this.page = page
+      let pageS = this.page
+      pageSearch(pageS).then(res => {
+        if (responseHandle(res)) {
+          this.page = res.data.body
+        } else {
+          this.$Message.error(res.data.msg)
+        }
+      })
     }
+  },
+  mounted () {
+    this.handleSearch()
   }
 }
 </script>

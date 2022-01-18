@@ -1,44 +1,38 @@
 import axios from 'axios'
+import {baseUrl} from './Config'
 import qs from 'qs'
-
-let baseUrl = 'http://127.0.0.1:8000/'
-export const init = () => {
-  return axios({
-    method: 'get',
-    url: baseUrl + 'init'
-  })
-}
 
 export const pageSearch = (page) => {
   console.log(qs.stringify(page))
   return axios({
     method: 'post',
-    url: baseUrl + 'serviceDict/list',
+    url: baseUrl + 'servicePeople/pageSearch',
     headers: {'content-type': 'application/x-www-form-urlencoded'},
     data: qs.stringify(page)
   })
 }
-export const addServiceDict = (dict) => {
+export const add = (entity) => {
   return axios({
     method: 'post',
-    url: baseUrl + 'serviceDict/add',
-    data: dict
+    url: baseUrl + 'servicePeople/add',
+    data: qs.stringify(entity)
   })
 }
 
-export const pageSearchRepost = (page) => {
+export const del = (id) => {
   return axios({
     method: 'post',
-    url: baseUrl + 'serviceDict/list',
+    url: baseUrl + 'servicePeople/del',
     headers: {'content-type': 'application/x-www-form-urlencoded'},
-    data: qs.stringify(page)
+    data: qs.stringify({id: id})
   })
 }
-export const listServiceDict = (type) => {
+
+export const get = (id) => {
   return axios({
     method: 'post',
-    url: baseUrl + 'serviceDict/listServiceDict',
+    url: baseUrl + 'servicePeople/get',
     headers: {'content-type': 'application/x-www-form-urlencoded'},
-    data: qs.stringify({type: type})
+    data: qs.stringify({id: id})
   })
 }
