@@ -3,7 +3,7 @@
     <Form :label-width="80" label-position="right">
       <Row>
         <MyFormItem label="客户" :span="12">
-          <Input style="width: 80%" search enter-button @on-search="searchCustom"/>
+          <Input style="width: 80%" v-model="custom" search enter-button @on-search="searchCustom"/>
         </MyFormItem>
         <MyFormItem label="工作人员" span="12">
           <Input style="width: 80%" search @on-search="searchServicePerson" enter-button/>
@@ -22,7 +22,7 @@
           <Input placeholder="Enter something..." style="width: 80%"/>
         </MyFormItem>
         <MyFormItem label="服务时间" span="12">
-          <DatePicker type="daterange" confirm placement="bottom-end" placeholder="Select date"
+          <DatePicker type="date" confirm placement="bottom-end" placeholder="Select date"
                       style="width: 80%"></DatePicker>
         </MyFormItem>
       </Row>
@@ -53,7 +53,15 @@ export default {
   data () {
     return {
       selectCustomShow: false,
-      selectServicePersonShow: false
+      selectServicePersonShow: false,
+      entity: {
+        custom: [],
+        servicePeople: [],
+        serviceType: '',
+        money: '',
+        address: '',
+        createDate: ''
+      }
     }
   },
   methods: {

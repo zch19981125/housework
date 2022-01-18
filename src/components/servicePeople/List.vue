@@ -4,7 +4,7 @@
       <Button type="primary" @click="show">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" style="margin-top: 3px"></Table>
+      <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch"></MyTable>
     </Card>
     <AddServicePeople :isShow="isShow" @on-callback="callback"></AddServicePeople>
   </div>
@@ -12,9 +12,13 @@
 
 <script>
 import AddServicePeople from './compant/Add'
+import {responseHandle} from '../common/utils/response'
+import {pageSearch} from '../common/api/ServicePeopleApi'
+import MyTable from '../common/utils/MyTable'
+
 export default {
   name: 'List',
-  components: {AddServicePeople},
+  components: {AddServicePeople, MyTable},
   data () {
     return {
       columns: [
@@ -26,43 +30,43 @@ export default {
         },
         {
           title: '姓名',
-          key: 'customer',
+          key: 'name',
           width: 200,
           align: 'center'
         },
         {
           title: '擅长',
-          key: 'serviceNum',
+          key: 'dictName',
           width: 150,
           align: 'center'
         },
         {
           title: '性别',
-          key: 'customer',
+          key: 'sex',
           width: 120,
           align: 'center'
         },
         {
           title: '年龄',
-          key: 'serviceMoney',
+          key: 'age',
           width: 100,
           align: 'center'
         },
         {
           title: '家庭地址',
-          key: 'staffMember',
+          key: 'address',
           minWidth: 120,
           align: 'center'
         },
         {
           title: '身份证号',
-          key: 'customer',
+          key: 'identityNum',
           width: 250,
           align: 'center'
         },
         {
           title: '登记时间',
-          key: 'customer',
+          key: 'createDate',
           width: 200,
           align: 'center'
         },
@@ -79,6 +83,12 @@ export default {
           }
         }
       ],
+      page: {
+        records: [],
+        total: 0,
+        current: 1,
+        size: 10
+      },
       isShow: false
     }
   },
@@ -88,7 +98,21 @@ export default {
     },
     show () {
       this.isShow = true
+    },
+    handleSearch (page) {
+      if (page) this.page = page
+      let pageS = this.page
+      pageSearch(pageS).then(res => {
+        if (responseHandle(res)) {
+          this.page = res.data.body
+        } else {
+          this.$Message.error(res.data.msg)
+        }
+      })
     }
+  },
+  mounted () {
+    this.handleSearch()
   }
 }
 </script>

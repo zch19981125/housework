@@ -31,6 +31,7 @@
 
 <script>
 import FormItem from '../../common/utils/MyFormItem'
+// import add from '../../common/api/CustomApi'
 
 export default {
   name: 'customerAdd',

@@ -4,7 +4,7 @@
       <Button type="primary" @click="()=>{this.addShow =true}">新增</Button>
     </Card>
     <Card>
-      <Table border :columns="columns" style="margin-top: 3px"></Table>
+      <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch"></MyTable>
     </Card>
     <AddService :isShow="addShow" @on-callback="callback"></AddService>
   </div>
@@ -12,10 +12,15 @@
 
 <script>
 import AddService from './compant/add'
+import {pageSearch} from '../common/api/ServiceApi'
+import {responseHandle} from '../common/utils/response'
+import MyTable from '../common/utils/MyTable'
+
 export default {
   name: 'serviceList',
   components: {
-    AddService
+    AddService,
+    MyTable
   },
   data () {
     return {
@@ -40,31 +45,31 @@ export default {
         },
         {
           title: '服务地址',
-          key: 'customer',
+          key: 'address',
           minWidth: 120,
           align: 'center'
         },
         {
           title: '服务费',
-          key: 'serviceMoney',
+          key: 'money',
           width: 100,
           align: 'center'
         },
         {
           title: '工作人员',
-          key: 'staffMember',
+          key: 'servicePeople',
           width: 220,
           align: 'center'
         },
         {
           title: '服务类型',
-          key: 'customer',
+          key: 'serviceType',
           width: 100,
           align: 'center'
         },
         {
           title: '服务时间',
-          key: 'customer',
+          key: 'createDate',
           width: 200,
           align: 'center'
         },
@@ -81,13 +86,34 @@ export default {
           }
         }
       ],
-      addShow: false
+      addShow: false,
+      page: {
+        records: [],
+        total: 0,
+        current: 1,
+        size: 10
+      }
     }
   },
   methods: {
     callback () {
       this.addShow = false
+    },
+    handleSearch (page) {
+      if (page) this.page = page
+      let pageS = this.page
+      pageS.records = []
+      pageSearch(pageS).then(res => {
+        if (responseHandle(res)) {
+          this.page = res.data.body
+        } else {
+          this.$Message.error(res.data.msg)
+        }
+      })
     }
+  },
+  mounted () {
+    this.handleSearch()
   }
 }
 </script>
