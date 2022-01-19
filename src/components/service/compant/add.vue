@@ -6,29 +6,33 @@
           <Input style="width: 80%" v-model="custom" search enter-button @on-search="searchCustom"/>
         </MyFormItem>
         <MyFormItem label="工作人员" span="12">
-          <Input style="width: 80%" search @on-search="searchServicePerson" enter-button/>
+          <Input style="width: 80%" v-model="servicePeople" search @on-search="searchServicePerson" enter-button/>
         </MyFormItem>
-        <MyFormItem label="服务类型" span="12">
-          <Select style="width: 80%">
-            <Option v-for="(item,i) in serviceDicts" :key="i" :value="item.value">{{ item.name }}</Option>
+        <MyFormItem  label="服务类型" span="12">
+          <Select v-model="entity.dictId" style="width: 80%">
+            <Option v-for="(item,i) in serviceDicts" :key="i" :value="item.id">{{ item.name }}</Option>
           </Select>
         </MyFormItem>
         <MyFormItem label="服务费" span="12">
-          <Input style="width: 50%">
+          <Input v-model="entity.money" style="width: 50%">
             <span slot="append">元</span>
           </Input>
         </MyFormItem>
-        <MyFormItem label="服务地址" span="12">
-          <Input placeholder="Enter something..." style="width: 80%"/>
+        <MyFormItem label="服务地址" v-model="entity.address" span="12">
+          <Input v-model="entity.address" placeholder="Enter something..." style="width: 80%"/>
         </MyFormItem>
         <MyFormItem label="服务时间" span="12">
-          <DatePicker type="date" confirm placement="bottom-end" placeholder="Select date"
+          <DatePicker type="date"  format="yyyy-MM-dd" v-model="entity.serviceDate" confirm placement="bottom-end" placeholder="Select date"
                       style="width: 80%"></DatePicker>
         </MyFormItem>
       </Row>
     </Form>
-    <SelectServicePerson :isShow="selectServicePersonShow" @on-callback="callBack"></SelectServicePerson>
-    <SelectCustom :isShow="selectCustomShow" @on-callback="callBack"></SelectCustom>
+    <SelectServicePerson :isShow="selectServicePersonShow" @on-callback="callBack1"></SelectServicePerson>
+    <SelectCustom :isShow="selectCustomShow" @on-callback="callBack2"></SelectCustom>
+    <div slot="footer">
+      <Button @click="cancel" type="default">取消</Button>
+      <Button @click="handleOk()" :loading="buttonLoading" type="primary">确定</Button>
+    </div>
   </Modal>
 </template>
 
@@ -38,6 +42,7 @@ import SelectServicePerson from './selectServicePerson'
 import SelectCustom from './selectCustom'
 import {listServiceDict} from '../../common/api/DictApi'
 import {responseHandle} from '../../common/utils/response'
+import {addService} from '../../common/api/ServicePeopleApi'
 
 export default {
   name: 'add',
@@ -57,21 +62,41 @@ export default {
       selectCustomShow: false,
       selectServicePersonShow: false,
       entity: {
-        custom: [],
-        servicePeople: [],
-        serviceType: '',
+        customId: '',
+        servicePeopleId: [],
+        dictId: '',
         money: '',
         address: '',
-        createDate: ''
+        serviceDate: ''
       },
-      serviceDicts: []
+      serviceDicts: [],
+      custom: '',
+      servicePeople: '',
+      buttonLoading: false
     }
   },
   methods: {
     handleClear () {
+      this.entity = {}
+      this.custom = ''
+      this.servicePeople = ''
     },
     cancel () {
+      this.handleClear()
       this.$emit('on-callback')
+    },
+    handleOk () {
+      this.buttonLoading = true
+      addService(this.entity).then(res => {
+        if (responseHandle(res)) {
+          this.$Message.success('添加成功')
+          this.handleClear()
+          this.$emit('on-callback', true)
+        } else {
+          this.$Message.error(res.data.msg)
+        }
+        this.buttonLoading = false
+      })
     },
     searchServicePerson () {
       this.selectServicePersonShow = true
@@ -79,9 +104,38 @@ export default {
     searchCustom () {
       this.selectCustomShow = true
     },
-    callBack () {
+    callBack1 (sureEntity) {
+      debugger
       this.selectServicePersonShow = false
       this.selectCustomShow = false
+      if (sureEntity instanceof Array && sureEntity.length > 0) {
+        console.log(sureEntity)
+        let i = 0
+        let n = ''
+        let ids = []
+        while (i < sureEntity.length) {
+          n = n + sureEntity[i].name
+          ids.push(sureEntity[i].id)
+          i = i + 1
+        }
+        this.servicePeople = n
+        this.entity.servicePeopleId = ids
+      } else {
+        this.servicePeople = ''
+        this.entity.servicePeopleId = []
+      }
+    },
+    callBack2 (sureEntity) {
+      this.selectServicePersonShow = false
+      this.selectCustomShow = false
+      if (!(sureEntity instanceof Array) && sureEntity.name && sureEntity.id) {
+        console.log(sureEntity)
+        this.custom = sureEntity.name
+        this.entity.customId = sureEntity.id
+      } else {
+        this.custom = ''
+        this.entity.customId = ''
+      }
     },
     handleSelectServiceType () {
       listServiceDict(1).then(res => {

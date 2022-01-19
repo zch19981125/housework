@@ -39,7 +39,7 @@ export default {
         },
         {
           title: '客户',
-          key: 'customer',
+          key: 'custom',
           width: 200,
           align: 'center'
         },
@@ -69,7 +69,7 @@ export default {
         },
         {
           title: '服务时间',
-          key: 'createDate',
+          key: 'serviceDate',
           width: 200,
           align: 'center'
         },
@@ -96,8 +96,11 @@ export default {
     }
   },
   methods: {
-    callback () {
+    callback (isSearch) {
       this.addShow = false
+      if (isSearch) {
+        this.handleSearch()
+      }
     },
     handleSearch (page) {
       if (page) this.page = page

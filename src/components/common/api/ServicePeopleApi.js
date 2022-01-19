@@ -11,3 +11,10 @@ export const pageSearch = (page) => {
     data: qs.stringify(page)
   })
 }
+export const addService = (dict) => {
+  return axios({
+    method: 'post',
+    url: baseUrl + 'service/add',
+    data: dict
+  })
+}

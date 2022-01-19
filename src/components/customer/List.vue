@@ -15,7 +15,6 @@ import customerAdd from './compant/add'
 import {pageSearch} from '../common/api/CustomApi'
 import {responseHandle} from '../common/utils/response'
 import MyTable from '../common/utils/MyTable'
-
 export default {
   name: 'customerList',
   components: {
@@ -80,31 +79,30 @@ export default {
           }
         }
       ],
+      addShow: false,
       page: {
         records: [],
         total: 0,
         current: 1,
         size: 10
-      },
-      addShow: false,
-      loading: false
+      }
     }
   },
   methods: {
-    callback (isSearch) {
-      debugger
+    callback () {
       this.addShow = false
-      if (isSearch) {
-        this.handleSearch()
-      }
     },
     handleSearch (page) {
+      debugger
       if (page) this.page = page
-      let searchPage = this.page
-      searchPage.records = []
-      pageSearch(searchPage).then(res => {
-        if (responseHandle(res)) this.page = res.data.body
-        this.loading = false
+      let pageS = this.page
+      pageS.records = []
+      pageSearch(pageS).then(res => {
+        if (responseHandle(res)) {
+          this.page = res.data.body
+        } else {
+          this.$Message.error(res.data.msg)
+        }
       })
     }
   },

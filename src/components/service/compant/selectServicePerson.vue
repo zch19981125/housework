@@ -1,6 +1,8 @@
 <template>
   <Modal v-model="isShow" width="1200" :closable="false">
-    <MyTable border :page="page" :columns="columns" style="margin-top: 3px" @search="handleSearch">
+    <Table :show-header="false" border ref="selection" :page="page" :columns="columns" :data="page.records" @on-select="handleSelect"
+           style="margin-top: 3px"
+           @search="handleSearch">
       <template slot-scope="{ row, index }" slot="salary">
         <Input type="text" v-model="salary" v-if="editIndex === index"/>
         <span v-else>{{ row.salary }}</span>
@@ -14,8 +16,16 @@
           <Button @click="handleEdit(row, index)">操作</Button>
         </div>
       </template>
-    </MyTable>
+    </Table>
+    <div style="margin: 10px;overflow: hidden">
+      <div style="float: right">
+        <Page :total="page.total" :page-size="page.size" :current="page.current" show-sizer show-total show-elevator
+              @on-change="changePage" @on-page-size-change="changePageSize" @on-prev="changePage"
+              @on-next="changePage"></Page>
+      </div>
+    </div>
     <div slot="footer">
+      <Button type="primary" @click="sure">确定</Button>
       <Button @click="cancel">关闭</Button>
     </div>
   </Modal>
@@ -25,6 +35,7 @@
 import {pageSearch} from '../../common/api/ServicePeopleApi'
 import {responseHandle} from '../../common/utils/response'
 import MyTable from '../../common/utils/MyTable'
+
 export default {
   name: 'selectServicePerson',
   components: {MyTable},
@@ -36,19 +47,19 @@ export default {
       columns: [
         {
           title: '序号',
-          type: 'index',
+          type: 'selection',
           maxWidth: 80,
           align: 'center'
         },
         {
           title: '姓名',
-          key: 'customer',
+          key: 'name',
           maxWidth: 200,
           align: 'center'
         },
         {
           title: '擅长',
-          key: 'serviceNum',
+          key: 'dictName',
           maxWidth: 150,
           align: 'center'
         },
@@ -72,7 +83,6 @@ export default {
         },
         {
           title: '本次服务工资',
-          key: 'salary',
           maxWidth: 200,
           slot: 'salary'
         },
@@ -85,16 +95,7 @@ export default {
       salary: '',
       editIndex: '',
       editId: '',
-      entity: [{
-        id: '001',
-        customer: '顶顶顶',
-        serviceNum: '保洁',
-        sex: '女',
-        age: '18',
-        staffMember: '惠泽园',
-        identityNumber: '37232116669863214',
-        salary: '100'
-      }],
+      sureEntity: [],
       page: {
         records: [],
         total: 0,
@@ -104,8 +105,24 @@ export default {
     }
   },
   methods: {
+    changePage (current) {
+      this.page.current = current
+      this.handleSearch(this.page)
+    },
+    changePageSize (size) {
+      this.page.size = size
+      this.handleSearch(this.page)
+    },
     cancel () {
+      this.sureEntity = []
+      this.$refs.selection.selectAll(false)
       this.$emit('on-callback', '')
+    },
+    sure () {
+      let entity = this.sureEntity
+      this.sureEntity = []
+      this.$refs.selection.selectAll(false)
+      this.$emit('on-callback', entity)
     },
     handleEdit (row, index) {
       this.editId = row.id
@@ -117,12 +134,18 @@ export default {
       this.data[index].id = this.editId
       this.editIndex = -1
     },
+    handleSelect (selection, row) {
+      this.sureEntity = selection
+    },
     handleSearch (page) {
       if (page) this.page = page
       let pageS = this.page
       pageSearch(pageS).then(res => {
         if (responseHandle(res)) {
-          this.page = res.data.body
+          try {
+            this.page = res.data.body
+          } catch (e) {
+          }
         } else {
           this.$Message.error(res.data.msg)
         }

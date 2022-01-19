@@ -48,7 +48,7 @@ export default {
       entity: {
         name: '',
         address: '',
-        age: '',
+        age: 0,
         sex: '',
         telephone: '',
         identityNum: ''
