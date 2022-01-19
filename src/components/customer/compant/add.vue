@@ -15,8 +15,8 @@
       </FormItem>
       <FormItem label="客户性别">
         <RadioGroup v-model="entity.sex" type="button" size="large" class="center">
-          <Radio label="男"></Radio>
-          <Radio label="女"></Radio>
+          <Radio label="1">男</Radio>
+          <Radio label="0">女</Radio>
         </RadioGroup>
       </FormItem>
       <FormItem label="客户电话">
@@ -26,6 +26,10 @@
         <Input v-model="entity.identityNum" style="width: 80%" placeholder="非必填"></Input>
       </FormItem>
     </Form>
+    <div slot="footer">
+      <Button @click="cancel" type="default">取消</Button>
+      <Button @click="handleOk()" :loading="buttonLoading" type="primary">确定</Button>
+    </div>
   </modal>
 </template>
 
@@ -52,20 +56,26 @@ export default {
         sex: '',
         telephone: '',
         identityNum: ''
-      }
+      },
+      buttonLoading: false
     }
   },
   methods: {
     cancel () {
+      this.entity = {}
       this.$emit('on-callback')
     },
-    add () {
+    handleOk () {
+      this.buttonLoading = true
       addCustom(this.entity).then(res => {
         if (responseHandle(res)) {
           this.$Message.success('添加成功')
+          this.entity = {}
+          this.$emit('on-callback', true)
         } else {
           this.$Message.error('添加失败')
         }
+        this.buttonLoading = false
       })
     }
   }

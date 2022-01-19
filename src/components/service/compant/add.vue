@@ -8,7 +8,7 @@
         <MyFormItem label="工作人员" span="12">
           <Input style="width: 80%" v-model="servicePeople" search @on-search="searchServicePerson" enter-button/>
         </MyFormItem>
-        <MyFormItem  label="服务类型" span="12">
+        <MyFormItem label="服务类型" span="12">
           <Select v-model="entity.dictId" style="width: 80%">
             <Option v-for="(item,i) in serviceDicts" :key="i" :value="item.id">{{ item.name }}</Option>
           </Select>
@@ -22,7 +22,8 @@
           <Input v-model="entity.address" placeholder="Enter something..." style="width: 80%"/>
         </MyFormItem>
         <MyFormItem label="服务时间" span="12">
-          <DatePicker type="date"  format="yyyy-MM-dd" v-model="entity.serviceDate" confirm placement="bottom-end" placeholder="Select date"
+          <DatePicker type="date" format="yyyy-MM-dd" v-model="entity.serviceDate" confirm placement="bottom-end"
+                      placeholder="Select date"
                       style="width: 80%"></DatePicker>
         </MyFormItem>
       </Row>
@@ -114,11 +115,11 @@ export default {
         let n = ''
         let ids = []
         while (i < sureEntity.length) {
-          n = n + sureEntity[i].name
+          n = n + sureEntity[i].name + '   '
           ids.push(sureEntity[i].id)
           i = i + 1
         }
-        this.servicePeople = n
+        this.servicePeople = n.split(0, n.length)
         this.entity.servicePeopleId = ids
       } else {
         this.servicePeople = ''

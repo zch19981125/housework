@@ -1,11 +1,9 @@
 <template>
   <Modal v-model="isShow" width="1200" :closable="false">
-    <Table ref="selection" :show-header="false" border :data="page.records" :columns="columns" style="margin-top: 3px" @search="handleSearch"
-           @on-select="handleSelect" @on-select-all="handleSelectAll">
-      <template slot="select">
-       <div>sssss</div>
-      </template>
+    <Table border ref="selection" :show-header="false" :data="page.records" :columns="columns" @on-select="handleSelect"
+           style="margin-top: 3px">
     </Table>
+    <Button @click="handleSelectAll(false)">Cancel all selected</Button>
     <div style="margin: 10px;overflow: hidden">
       <div style="float: right">
         <Page :total="page.total" :page-size="page.size" :current="page.current" show-sizer show-total show-elevator
@@ -40,8 +38,7 @@ export default {
           title: '序号',
           type: 'selection',
           width: 80,
-          align: 'center',
-          slot: 'select'
+          align: 'center'
         },
         {
           title: '姓名',
@@ -86,14 +83,16 @@ export default {
         current: 1,
         size: 10
       },
-      sureEntity: {}
+      sureEntity: {},
+      cusSelection: [],
+      responseData: []
     }
   },
   methods: {
     cancel () {
       this.sureEntity = {}
-      this.$emit('on-callback', '')
       this.$refs.selection.selectAll(false)
+      this.$emit('on-callback', false)
     },
     sure () {
       let entity = this.sureEntity
@@ -110,11 +109,9 @@ export default {
       this.handleSearch(this.page)
     },
     handleSelect (selection, row) {
-      this.$refs.selection.selectAll(false)
+      debugger
       this.sureEntity = row
-    },
-    handleSelectAll () {
-      this.$refs.selection.selectAll(false)
+      this.sure()
     },
     handleSearch (page) {
       if (page) this.page = page
@@ -124,10 +121,21 @@ export default {
         if (responseHandle(res)) this.page = res.data.body
         this.loading = false
       })
+    },
+    handleSelectAll (status) {
+      this.$refs.selection.selectAll(status)
     }
   },
   mounted () {
     this.handleSearch()
+    this.$refs.selection.selectAll(status)
+  },
+  watch: {
+    isShow (newVal) {
+      this.handleSearch()
+      // 获取数据
+      this.$refs.selection.selectAll(status)
+    }
   }
 }
 </script>

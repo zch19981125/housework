@@ -15,7 +15,7 @@ export const add = (entity) => {
   return axios({
     method: 'post',
     url: baseUrl + 'servicePeople/add',
-    data: qs.stringify(entity)
+    data: entity
   })
 }
 

@@ -6,7 +6,7 @@ export const addCustom = (dict) => {
   return axios({
     method: 'post',
     url: baseUrl + 'custom/add',
-    data: qs.stringify(dict)
+    data: dict
   })
 }
 export const pageSearch = (page) => {

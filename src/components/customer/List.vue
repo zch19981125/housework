@@ -15,6 +15,7 @@ import customerAdd from './compant/add'
 import {pageSearch} from '../common/api/CustomApi'
 import {responseHandle} from '../common/utils/response'
 import MyTable from '../common/utils/MyTable'
+
 export default {
   name: 'customerList',
   components: {
@@ -89,8 +90,11 @@ export default {
     }
   },
   methods: {
-    callback () {
+    callback (isSearch) {
       this.addShow = false
+      if (isSearch) {
+        this.handleSearch()
+      }
     },
     handleSearch (page) {
       debugger
