@@ -17,22 +17,25 @@
 
     <select id="pageSearch" resultMap="pageSearchMap">
         SELECT s.*,
-               GROUP_CONCAT(dict.name ORDER BY dict.`order` SEPARATOR ',') as type,
-               GROUP_CONCAT(people.name ORDER BY people.`create_date` SEPARATOR ',') as service_people
+               custom.`name`                                                         as custom,
+               dict.`name`                                                           as dict,
+               GROUP_CONCAT(dict.NAME ORDER BY dict.`order` SEPARATOR ',')           AS type,
+               GROUP_CONCAT(people.NAME ORDER BY people.`create_date` SEPARATOR ',') AS service_people
         FROM `service` s
-                 LEFT JOIN service_dict sd
-                           on s.id = sd.service_id
-                 LEFT JOIN dict
-                           on sd.dict_id = dict.id
-                 LEFT JOIN service_service_people sp
-                           on sp.service_id = s.id
-                 LEFT JOIN service_people people
-                           on sp.people_id = people.id
-                 LEFT JOIN service_custom sc
-                           on sc.service_id = s.id
-        where is_delete = '0'
+                 LEFT JOIN dict dict ON s.dict_id = dict.id
+                 LEFT JOIN custom custom ON s.custom_id = custom.id
+                 LEFT JOIN service_service_people sp ON sp.service_id = s.id
+                 LEFT JOIN service_people people ON sp.people_id = people.id
+        WHERE s.is_delete = '0'
         order by s.create_date desc
-        limit #{current},#{size}
+            limit #{current}, #{size}
     </select>
+
+    <insert id="insertServicePeople">
+        insert into service_service_people (service_id,people_id) values
+        <foreach collection="param" index="index" item="dictItem" separator=",">
+            (#{serviceId},#{dictItem, jdbcType=NUMERIC})
+        </foreach>
+    </insert>
 
 </mapper>

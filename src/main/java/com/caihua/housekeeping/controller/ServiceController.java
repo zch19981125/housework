@@ -6,8 +6,11 @@ import com.caihua.housekeeping.service.ServiceService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import java.util.Map;
 
 @Controller
 @RequestMapping("service")
@@ -23,6 +26,11 @@ public class ServiceController {
 	@RequestMapping("pageSearch")
 	public ResponseJson pageSearch(Integer current, Integer size, Service serviceEntity){
 		return ResponseJson.success(service.pageSearch(current,size,serviceEntity));
+	}
+
+	@RequestMapping("add")
+	public ResponseJson add(@RequestBody Map<String,Object> param){
+		return ResponseJson.success(service.add(param));
 	}
 
 }
