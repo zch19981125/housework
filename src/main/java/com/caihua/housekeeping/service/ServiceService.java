@@ -12,10 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 @Service
 public class ServiceService extends ServiceImpl<ServiceMapper, com.caihua.housekeeping.entity.Service> {
@@ -40,6 +38,7 @@ public class ServiceService extends ServiceImpl<ServiceMapper, com.caihua.housek
 		com.caihua.housekeeping.entity.Service o= JSON.parseObject(JSONObject.toJSONString(param), com.caihua.housekeeping.entity.Service.class);
 		o.setIsDelete(false);
 		o.setCreateDate(new Date());
+		o.setServiceNum("JZ"+new SimpleDateFormat("MMDDHHSS").format(new Date()) );
 		serviceMapper.insert(o);
 		serviceMapper.insertServicePeople(Integer.parseInt(o.getId()),peopleList);
 

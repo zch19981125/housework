@@ -15,4 +15,6 @@ public interface ServicePeopleMapper extends BaseMapper<ServicePeople> {
 	List<ServicePeopleVo> listServicePeople(@Param("people") ServicePeople people, @Param("current")Integer current, @Param("size")Integer size);
 
 	Integer countListServicePeople(@Param("people")ServicePeople people);
+
+	Integer insertPeopleDict(@Param("id") Integer id, @Param("dictList") List<String> dicts);
 }

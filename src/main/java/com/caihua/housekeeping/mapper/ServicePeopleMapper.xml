@@ -33,12 +33,12 @@
     </resultMap>
 
     <select id="listServicePeople" parameterType="com.caihua.housekeeping.entity.ServicePeople" resultMap="peopleVo">
-        SELECT s.*, GROUP_CONCAT(dict.name order by dict.order SEPARATOR  ',') as dicts
+        SELECT s.*, GROUP_CONCAT(dict.name order by dict.order SEPARATOR ',') as dicts
         FROM service_people s
-                 LEFT JOIN people_dict p
-                           on s.id = p.people_id
-                 LEFT JOIN dict dict
-                           on p.dict_id = dict.id
+        LEFT JOIN people_dict p
+        on s.id = p.people_id
+        LEFT JOIN dict dict
+        on p.dict_id = dict.id
         WHERE s.is_delete ='0'
         <if test="people.age != null">
             and p.age = #{people.age}
@@ -48,10 +48,11 @@
         </if>
         <if test="people.dicts != null">
             and dict.id in
-          <foreach collection="people.dicts" index="index" item="dictItem" open="(" close=")" separator=",">
-            #{people.dicts[$index]}
-          </foreach>
+            <foreach collection="people.dicts" index="index" item="dictItem" open="(" close=")" separator=",">
+                #{people.dicts[$index]}
+            </foreach>
         </if>
+        GROUP BY s.id
         order by s.create_date
         limit #{current },#{size}
     </select>
@@ -78,4 +79,12 @@
             </foreach>
         </if>
     </select>
+
+    <insert id="insertPeopleDict">
+        insert into people_dict (dict_id, people_id)
+        values 
+        <foreach collection="dictList" item="item" separator=",">
+            (#{item},#{id})
+        </foreach>
+    </insert>
 </mapper>

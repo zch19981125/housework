@@ -16,16 +16,24 @@
     </resultMap>
 
     <select id="pageSearch" resultMap="pageSearchMap">
-        SELECT s.*,
-               custom.`name`                                                         as custom,
-               dict.`name`                                                           as dict,
-               GROUP_CONCAT(dict.NAME ORDER BY dict.`order` SEPARATOR ',')           AS type,
-               GROUP_CONCAT(people.NAME ORDER BY people.`create_date` SEPARATOR ',') AS service_people
+        SELECT s.id,
+               s.service_num as service_num,
+               custom.`name` AS custom,
+               s.address as address,
+               s.money as money,
+               sp.serive_people as service_people,
+               dict.`name`   AS type,
+               s.service_date as service_date
         FROM `service` s
                  LEFT JOIN dict dict ON s.dict_id = dict.id
                  LEFT JOIN custom custom ON s.custom_id = custom.id
-                 LEFT JOIN service_service_people sp ON sp.service_id = s.id
-                 LEFT JOIN service_people people ON sp.people_id = people.id
+                 LEFT JOIN (
+            SELECT sp.service_id,
+                   GROUP_CONCAT(p.NAME) AS serive_people
+            FROM service_service_people sp
+                     INNER JOIN service_people p ON sp.people_id = p.id
+            GROUP BY sp.service_id
+        ) AS sp ON sp.service_id = s.id
         WHERE s.is_delete = '0'
         order by s.create_date desc
             limit #{current}, #{size}

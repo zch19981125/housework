@@ -7,6 +7,7 @@ import com.caihua.housekeeping.service.CustomService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.CrossOrigin;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -24,5 +25,10 @@ public class CustomController {
 	@RequestMapping("pageSearch")
 	public ResponseJson pageSearch(IPage<Custom> page){
 		return ResponseJson.success(customService.pageSearch(page));
+	}
+
+	@RequestMapping("add")
+	public ResponseJson add(@RequestBody Custom custom){
+		return ResponseJson.success(customService.add(custom));
 	}
 }
